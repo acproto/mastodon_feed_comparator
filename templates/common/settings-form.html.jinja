@@ -1,0 +1,50 @@
+{% macro text_field(settings_id, label, name, value) -%}
+    <label for="{{name}}-{{settings_id}}">{{label}}</label><input type="text" id="{{name}}-{{settings_id}}" name="{{name}}" value="{{ value }}" />
+{%- endmacro %}
+
+{% macro select(settings_id, label, name, options, value) -%}
+    <label for="{{name}}-{{settings_id}}">{{label}}</label>
+    <select id="{{name}}-{{settings_id}}" name="{{name}}">
+    {% for option in options %}
+      <option value="{{ option.value }}" {% if option.value == value %}selected{% endif %}>{{ option.label }}</option>
+    {% endfor %}
+    </select>
+{%- endmacro %}
+
+{% macro settings(settings_id, timeline_name='home', hours=12,
+                  scorer='SimpleWeighted', threshold='normal', show_settings=False) -%}
+    <details class="render-info" {% if show_settings %}open="open"{% endif %}>
+        <summary>Settings</summary>
+            <form id="settings-{{ settings_id }}">
+            {{ select(settings_id, 'Timeline source', 'source',
+                      [
+                        {'label': 'Home', 'value': 'home'},
+                        {'label': 'Local', 'value': 'local'},
+                        {'label': 'Federated', 'value': 'federated'}
+                      ],
+                      timeline_name) }}
+            {{ text_field(settings_id, 'Hours', 'hours', hours) }}
+            {{ select(settings_id, 'Scorer', 'scorer',
+                      [
+                        {'label': 'Likes and boosts', 'value': 'Simple'},
+                        {'label': 'Weighted likes and boosts', 'value': 'SimpleWeighted'},
+                        {'label': 'Likes, boosts, replies', 'value': 'ExtendedSimple'},
+                        {'label': 'Weighted likes, boosts, replies', 'value': 'ExtendedSimpleWeighted'}
+                      ],
+                      scorer) }}
+            {{ select(settings_id, 'Threshold', 'threshold',
+                      [
+                        {'label': 'Lax', 'value': 'lax'},
+                        {'label': 'Normal', 'value': 'normal'},
+                        {'label': 'Strict', 'value': 'strict'}
+                      ],
+                      threshold) }}
+            <input type="submit" value="Update feed">
+            </form>
+    </details>
+{%- endmacro %}
+
+
+
+
+

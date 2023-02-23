@@ -1,0 +1,20 @@
+{% include "scripts.html.jinja" %}
+<div class="container">
+    <section class="posts">
+    {% if posts %}
+        <h2>Popular posts:</h2>
+        {% with posts=posts %}
+            {% include "posts.html.jinja" %}
+        {% endwith %}
+    {% endif %}
+    </section>
+
+    <section class="posts">
+    {% if boosts %}
+        <h2>Popular boosts:</h2>
+        {% with posts=boosts %}
+            {% include "posts.html.jinja" %}
+        {% endwith %}
+    {% endif %}
+    </section>
+</div>

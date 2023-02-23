@@ -4,14 +4,13 @@ import argparse
 import dotenv
 import os
 import sys
-from datetime import datetime
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from jinja2 import Environment, FileSystemLoader
 from mastodon import Mastodon
 
-from api import fetch_posts_and_boosts
+from digest import fetch_digest
+from renderer import render
 from scorers import get_scorers
 from thresholds import get_threshold_from_name, get_thresholds
 
@@ -21,11 +20,7 @@ if TYPE_CHECKING:
 
 
 def render_digest(context: dict, output_dir: Path, theme: str = "default") -> None:
-    environment = Environment(
-        loader=FileSystemLoader([f"templates/themes/{theme}", "templates/common"])
-    )
-    template = environment.get_template("index.html.jinja")
-    output_html = template.render(context)
+    output_html = render(context, theme)
     output_file_path = output_dir / "index.html"
     output_file_path.write_text(output_html)
 
@@ -63,38 +58,16 @@ def run(
         api_base_url=mastodon_base_url,
     )
 
-    # 1. Fetch all the posts and boosts from our home timeline that we haven't interacted with
-    posts, boosts = fetch_posts_and_boosts(hours, mst, timeline)
-
-    # 2. Score them, and return those that meet our threshold
-    threshold_posts = threshold.posts_meeting_criteria(posts, scorer)
-    threshold_boosts = threshold.posts_meeting_criteria(boosts, scorer)
-
-    # 3. Sort posts and boosts by score, descending
-    threshold_posts = sorted(
-        threshold_posts, key=lambda post: post.get_score(scorer), reverse=True
-    )
-    threshold_boosts = sorted(
-        threshold_boosts, key=lambda post: post.get_score(scorer), reverse=True
-    )
+    digest_dict = fetch_digest(mst, hours, scorer, threshold, mastodon_base_url, timeline)
 
     # 4. Build the digest
-    if len(threshold_posts) == 0 and len(threshold_boosts) == 0:
+    if not digest_dict:
         sys.exit(
             f"No posts or boosts were found for the provided digest arguments. Exiting."
         )
     else:
         render_digest(
-            context={
-                "hours": hours,
-                "posts": threshold_posts,
-                "boosts": threshold_boosts,
-                "mastodon_base_url": mastodon_base_url,
-                "rendered_at": datetime.utcnow().strftime("%B %d, %Y at %H:%M:%S UTC"),
-                "timeline_name": timeline,
-                "threshold": threshold.get_name(),
-                "scorer": scorer.get_name(),
-            },
+            context=digest_dict,
             output_dir=output_dir,
             theme=theme,
         )

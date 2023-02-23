@@ -1,0 +1,150 @@
+body {
+    background-color: #292c36;
+    font-family: "Courier new", monospace;
+}
+
+input,select {
+    font-family: "Courier new", monospace;
+}
+
+div.container {
+    max-width: 640px;
+    padding: 10px;
+    text-align: center;
+}
+
+.posts {
+    align: center;
+}
+
+div.post {
+    margin-top: 20px;
+}
+
+h1 {
+    color: #fff;
+}
+
+h2 {
+    color: #9baec8;
+}
+
+a.home-link {
+    color: #9baec8;
+}
+
+a.original-link {
+    color: #9baec8;
+}
+
+span.link-divider {
+    color: #9baec8;
+}
+
+.render-info {
+    color: #fff;
+    max-width: 640px;
+    text-align: left;
+}
+
+.render-info summary {
+    cursor: pointer;
+    margin-bottom: 10px
+}
+
+.render-info-value {
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+.render-info input[type=text],input[type=submit],select {
+  width: 95%;
+  padding: 12px 5px;
+  margin: 8px 8px 8px 0;
+  box-sizing: border-box;
+}
+
+/* TODO: color variables */
+.render-info input[type=text],select {
+  border: none;
+  border-bottom: 2px solid #6364ff;
+  background-color: transparent;
+  color: #9baec8;
+}
+
+.render-info input[type=text]:focus,select:focus {
+  border: none;
+  outline: none;
+  border-bottom: 4px solid #6364ff;
+}
+
+.render-info input[type=submit] {
+  background-color: #6364ff;
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 1em;
+}
+
+iframe.mastodon-embed {
+    max-width: 100%;
+    border: 0;
+}
+
+/* Loading widget */
+.loading {
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+.loading div {
+  box-sizing: border-box;
+  display: block;
+  position: absolute;
+  width: 64px;
+  height: 64px;
+  margin: 8px;
+  border: 8px solid #fff;
+  border-radius: 50%;
+  animation: loading 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  border-color: #fff transparent transparent transparent;
+}
+.loading div:nth-child(1) {
+  animation-delay: -0.45s;
+}
+.loading div:nth-child(2) {
+  animation-delay: -0.3s;
+}
+.loading div:nth-child(3) {
+  animation-delay: -0.15s;
+}
+@keyframes loading {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Columns */
+.column {
+    float: left;
+    width: 33.33%;
+    min-width: 33.33%;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Responsive layout - when the screen is less than 600px wide, make the three columns stack on top of each other instead of next to each other */
+@media screen and (max-width: 600px) {
+  .column {
+    width: 100%;
+  }
+}
