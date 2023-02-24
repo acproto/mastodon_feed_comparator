@@ -7,10 +7,12 @@ from models import ScoredPost
 
 if TYPE_CHECKING:
     from mastodon import Mastodon
+    from scorers import Scorer
 
 
 def fetch_posts_and_boosts(
-    hours: int, mastodon_client: Mastodon, timeline: str
+    hours: int, mastodon_client: Mastodon, timeline: str,
+    scorer: Scorer
 ) -> tuple[list[ScoredPost], list[ScoredPost]]:
     """Fetches posts from the home timeline that the account hasn't interacted with"""
 
@@ -69,7 +71,7 @@ def fetch_posts_and_boosts(
                 post = post["reblog"]  # look at the boosted post
                 boost = True
 
-            scored_post = ScoredPost(post)  # wrap the post data as a ScoredPost
+            scored_post = ScoredPost(post, scorer)  # wrap the post data as a ScoredPost
 
             if scored_post.url not in seen_post_urls:
                 # Apply our local filters

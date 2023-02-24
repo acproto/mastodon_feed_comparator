@@ -1,0 +1,8 @@
+{% macro tooltip(helpText=null) -%}
+    {% if helpText %}
+    <div class="tooltip">
+        <i class="fa fa-question-circle" aria-hidden="true"></i>
+        <span class="tooltip-text">{{helpText}}</span>
+    </div>
+    {% endif %}
+{%- endmacro %}

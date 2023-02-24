@@ -6,7 +6,7 @@ from mastodon import Mastodon
 
 from digest import fetch_digest
 from renderer import render
-from scorers import get_scorers
+from scorers import AllFactorsWeightedScorer
 from thresholds import get_threshold_from_name
 
 
@@ -18,18 +18,15 @@ mst = Mastodon(
 )
 
 DEFAULT_HOURS = 12
-DEFAULT_SCORER = 'SimpleWeighted'
 DEFAULT_THRESHOLD = 'normal'
 DEFAULT_TIMELINE = 'home'
-SCORERS = get_scorers()
 
 
 @app.route('/')
 def index():
-    # Get feed data
-    # TODO: two different feeds. Probably AJAX-y load them instead.
-    # Render JINJA template
-    return render({}, 'comparison')
+    # TODO: send context to the homepage template for the first two default feeds
+    # instead of hardcoding them in the client.
+    return render({}, template='comparison.html.jinja')
 
 
 @app.route('/feed/generate', methods=['POST'])
@@ -37,9 +34,13 @@ def get_feed():
     # POST data
     jdata = request.get_json()
     hours = int(jdata.get('hours')) or DEFAULT_HOURS
-    scorer = SCORERS[jdata.get('scorer') or DEFAULT_SCORER]()
+    scorer = AllFactorsWeightedScorer(
+        favourites_weight=float(jdata.get('favourites_weight') or 0),
+        reblogs_weight=float(jdata.get('reblogs_weight') or 0),
+        replies_weight=float(jdata.get('replies_weight') or 0),
+        inverse_follower_boost=bool(int(jdata.get('inverse_follower_boost') or 0)))
     threshold = get_threshold_from_name(jdata.get('threshold') or DEFAULT_THRESHOLD)
     timeline = jdata.get('timeline') or DEFAULT_TIMELINE
-    digest_data = fetch_digest(mst, hours, scorer, threshold, mastodon_base_url, timeline)
+    digest_data = fetch_digest(mst, mastodon_base_url, hours, scorer, threshold, timeline, limit=5)
     # From args return feed HTML or JSON
-    return render(digest_data, 'simple')
+    return render(digest_data, template='digest.html.jinja')

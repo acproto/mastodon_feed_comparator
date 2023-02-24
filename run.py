@@ -20,7 +20,7 @@ if TYPE_CHECKING:
 
 
 def render_digest(context: dict, output_dir: Path, theme: str = "default") -> None:
-    output_html = render(context, theme)
+    output_html = render(context, theme=theme)
     output_file_path = output_dir / "index.html"
     output_file_path.write_text(output_html)
 

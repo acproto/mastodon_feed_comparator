@@ -3,6 +3,14 @@
     <a class="home-link" href="{{ post.get_home_url(mastodon_base_url) }}" target="_blank">Home Link</a>
     <span class="link-divider"> | </span>
     <a class="original-link" href="{{ post.url }}" target="_blank">Original Link</a>
+    {% if post.debug_score_string %}
+    <div>
+        <details>
+        <summary>Score: {{ post.score }}</summary>
+            <div class="preserve-ws left">{{ post.debug_score_string }}</div>
+        </details>
+    </div>
+    {% endif %}
     <br />
     <iframe src="{{ post.url }}/embed" class="mastodon-embed" allowfullscreen="allowfullscreen" width="400"></iframe>
 </div>

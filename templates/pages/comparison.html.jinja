@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Mastodon Digest Comparator</title>
+    <script src="https://kit.fontawesome.com/b4428b020a.js" crossorigin="anonymous"></script>
+    <style>
+    {% include "comparison.css" %}
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <script>
+    {% include "comparison.js" %}
+    </script>
+</head>
+<body>
+    {% import "settings-form.html.jinja" as settings %}
+    <h1>Welcome to Digest Comparator <i class="fa-solid fa-heart"></i></h1>
+    <div>
+        Two default feed settings have been set. Feel free to choose your own settings for the third feed and
+        update the settings in the first two feeds to see how different engagement factors affect your feed.
+    <div>
+    <div class="column-3">
+        <input class="feed-title" type="text" value="Timeline"/>
+        {{ settings.settings('1', favourites_weight=0, reblogs_weight=0, replies_weight=0) }}
+        <div id="loader-1" class="loading" style="display:none;"><div></div><div></div><div></div><div></div></div>
+        <div id="feed-1"></div>
+    </div>
+    <div class="column-3">
+        <input class="feed-title" type="text" value="Heavy favorites"/>
+        {{ settings.settings('2', favourites_weight=2, reblogs_weight=0.2, replies_weight=0, inverse_follower_boost=0) }}
+        <div id="loader-2" class="loading" style="display:none;"><div></div><div></div><div></div><div></div></div>
+        <div id="feed-2"></div>
+    </div>
+    </div>
+    <div id="settings" class="column-3">
+        <input class="feed-title" type="text" value="Choose your own"/>
+        {{ settings.settings('3') }}
+        <div id="loader-3" class="loading" style="display:none;"><div></div><div></div><div></div><div></div></div>
+        <div id="feed-3"></div>
+    </div>
+</body>
+</html>

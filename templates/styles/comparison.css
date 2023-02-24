@@ -1,10 +1,20 @@
+:root {
+  --main-bg-color: #292c36;
+  --main-font-color: #fff;
+  --minor-font-color: #9baec8;
+  --accent-color: #6364ff;
+  --accent-color-2: #fffe63;
+  --font-family: "Courier new", monospace;
+}
+
 body {
-    background-color: #292c36;
-    font-family: "Courier new", monospace;
+    background-color: var(--main-bg-color);
+    font-family: var(--font-family);
+    color: var(--main-font-color);
 }
 
 input,select {
-    font-family: "Courier new", monospace;
+    font-family: var(--font-family);
 }
 
 div.container {
@@ -19,77 +29,129 @@ div.container {
 
 div.post {
     margin-top: 20px;
+    color: var(--minor-font-color);
 }
 
 h1 {
-    color: #fff;
+    color: var(--main-font-color);
 }
 
 h2 {
-    color: #9baec8;
+    color: var(--minor-font-color);
 }
 
 a.home-link {
-    color: #9baec8;
+    color: var(--minor-font-color);
 }
 
 a.original-link {
-    color: #9baec8;
+    color: var(--minor-font-color);
 }
 
 span.link-divider {
-    color: #9baec8;
-}
-
-.render-info {
-    color: #fff;
-    max-width: 640px;
-    text-align: left;
-}
-
-.render-info summary {
-    cursor: pointer;
-    margin-bottom: 10px
-}
-
-.render-info-value {
-    font-weight: bold;
-    margin-right: 5px;
-}
-
-.render-info input[type=text],input[type=submit],select {
-  width: 95%;
-  padding: 12px 5px;
-  margin: 8px 8px 8px 0;
-  box-sizing: border-box;
-}
-
-/* TODO: color variables */
-.render-info input[type=text],select {
-  border: none;
-  border-bottom: 2px solid #6364ff;
-  background-color: transparent;
-  color: #9baec8;
-}
-
-.render-info input[type=text]:focus,select:focus {
-  border: none;
-  outline: none;
-  border-bottom: 4px solid #6364ff;
-}
-
-.render-info input[type=submit] {
-  background-color: #6364ff;
-  border: none;
-  border-radius: 4px;
-  color: #fff;
-  font-size: 1em;
+    color: var(--minor-font-color);
 }
 
 iframe.mastodon-embed {
     max-width: 100%;
     border: 0;
 }
+
+.left {
+    text-align: left;
+}
+.center {
+    text-align: center;
+}
+.right {
+    text-align: right;
+}
+.preserve-ws {
+    white-space: pre-wrap;
+}
+
+.settings {
+    color: var(--main-font-color);
+    max-width: 640px;
+    text-align: left;
+}
+
+.settings summary {
+    cursor: pointer;
+    margin-bottom: 10px
+}
+
+.settings-value {
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+input[type=text],input[type=submit],input[type=range],select {
+  width: 95%;
+  margin: 0 8px 20px 0;
+  box-sizing: border-box;
+}
+
+input[type=text]:focus,select:focus {
+  border: none;
+  outline: none;
+}
+
+/* Feed title */
+input[type=text].feed-title {
+  border: none;
+  border-bottom: 2px solid var(--accent-color-2);
+  background-color: transparent;
+  color: var(--main-font-color);
+  font-size: 1.75em;
+  font-weight: 700;
+  padding: 12px 5px;
+}
+
+input[type=text].feed-title:focus {
+  border-bottom: 4px solid var(--accent-color-2);
+}
+
+
+/* Settings form elements */
+.settings input[type=text],select {
+  border: none;
+  border-bottom: 2px solid var(--accent-color);
+  background-color: transparent;
+  color: var(--minor-font-color);
+  padding: 12px 5px;
+}
+
+.settings input[type=text]:focus,select:focus {
+  border-bottom: 4px solid var(--accent-color);
+}
+
+.settings input[type=submit] {
+  background-color: var(--accent-color);
+  border: none;
+  border-radius: 4px;
+  color: var(--main-font-color);
+  font-size: 1em;
+  padding: 12px 5px;
+  cursor: pointer;
+}
+
+/* Range slider */
+.range input[type=range],input[type=radio] {
+  accent-color: var(--accent-color);
+  margin: 8px 0;
+}
+
+.section {
+    margin: 30px 0;
+}
+
+.range-labels {
+    width: 95%;
+    font-size: 0.8em;
+    color: var(--minor-font-color);
+}
+
 
 /* Loading widget */
 .loading {
@@ -105,10 +167,10 @@ iframe.mastodon-embed {
   width: 64px;
   height: 64px;
   margin: 8px;
-  border: 8px solid #fff;
+  border: 8px solid var(--main-font-color);
   border-radius: 50%;
   animation: loading 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-  border-color: #fff transparent transparent transparent;
+  border-color: var(--main-font-color) transparent transparent transparent;
 }
 .loading div:nth-child(1) {
   animation-delay: -0.45s;
@@ -129,10 +191,15 @@ iframe.mastodon-embed {
 }
 
 /* Columns */
-.column {
+.column-3 {
     float: left;
     width: 33.33%;
     min-width: 33.33%;
+}
+.column-4 {
+    float: left;
+    width: 25%;
+    min-width: 25%;
 }
 
 /* Clear floats after the columns */
@@ -147,4 +214,33 @@ iframe.mastodon-embed {
   .column {
     width: 100%;
   }
+}
+
+/* Tooltip */
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+/* Tooltip text */
+.tooltip .tooltip-text {
+  visibility: hidden;
+  width: 200px;
+  background-color: black;
+  color: var(--main-font-color);
+  text-align: left;
+  padding: 5px;
+  border-radius: 6px;
+
+  /* Position the tooltip text - see examples below! */
+  position: absolute;
+  z-index: 1;
+  top: 100%;
+  left: 50%;
+  margin-left: -100px; /* Half of width */
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltip:hover .tooltip-text {
+  visibility: visible;
 }

@@ -7,7 +7,6 @@ from scipy import stats
 
 if TYPE_CHECKING:
     from models import ScoredPost
-    from scorers import Scorer
 
 
 class Threshold(Enum):
@@ -19,11 +18,11 @@ class Threshold(Enum):
         return self.name.lower()
 
     def posts_meeting_criteria(
-        self, posts: list[ScoredPost], scorer: Scorer
+        self, posts: list[ScoredPost]
     ) -> list[ScoredPost]:
         """Returns a list of ScoredPosts that meet this Threshold with the given Scorer"""
 
-        all_post_scores = [p.get_score(scorer) for p in posts]
+        all_post_scores = [p.score for p in posts]
         min_score = stats.scoreatpercentile(all_post_scores, per=self.value)
         threshold_posts = [
             post for post, score in zip(posts, all_post_scores) if score >= min_score

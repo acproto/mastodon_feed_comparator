@@ -1,9 +1,14 @@
-{% macro text_field(settings_id, label, name, value) -%}
-    <label for="{{name}}-{{settings_id}}">{{label}}</label><input type="text" id="{{name}}-{{settings_id}}" name="{{name}}" value="{{ value }}" />
+{% from "tooltip.html.jinja" import tooltip with context %}
+
+{% macro text_field(settings_id, label, name, value, helpText=null) -%}
+    <label for="{{name}}-{{settings_id}}">{{label}}</label>
+    {{ tooltip(helpText) }}
+    <input type="text" id="{{name}}-{{settings_id}}" name="{{name}}" value="{{ value }}" />
 {%- endmacro %}
 
-{% macro select(settings_id, label, name, options, value) -%}
+{% macro select(settings_id, label, name, options, value, helpText=null) -%}
     <label for="{{name}}-{{settings_id}}">{{label}}</label>
+    {{ tooltip(helpText) }}
     <select id="{{name}}-{{settings_id}}" name="{{name}}">
     {% for option in options %}
       <option value="{{ option.value }}" {% if option.value == value %}selected{% endif %}>{{ option.label }}</option>
@@ -11,35 +16,70 @@
     </select>
 {%- endmacro %}
 
+{% macro radio(settings_id, label, name, options, value, helpText=null) -%}
+    <div class="section">
+        <div>{{label}} {{ tooltip(helpText) }}</div>
+        {% for option in options %}
+          <input id="{{name}}-{{settings_id}}-{{option.value}}" name="{{name}}" type="radio" value="{{ option.value }}" {% if option.value == value %}checked="checked"{% endif %} />
+          <label for="{{name}}-{{settings_id}}-{{option.value}}">{{option.label}}</label><br/>
+        {% endfor %}
+    </div>
+{%- endmacro %}
+
+{% macro range(settings_id, label, name, rangeLabels, min, max, step, value) -%}
+    <div class="range section">
+        <label for="{{name}}-{{settings_id}}">{{label}}</label>
+        {{ tooltip(helpText) }}
+        <input type="range" id="{{name}}-{{settings_id}}" name="{{name}}" min="{{min}}" max="{{max}}" step="{{step}}" value="{{value}}">
+        <div class="range-labels">
+            {% for label in rangeLabels %}
+            <div class="column-{{rangeLabels|length}} {% if loop.index == 1 %}left{% elif loop.index == rangeLabels|length %}right{% else %}center{% endif %}">{{label}}</div>
+            {% endfor %}
+        </div>
+    </div>
+{%- endmacro %}
+
 {% macro settings(settings_id, timeline_name='home', hours=12,
-                  scorer='SimpleWeighted', threshold='normal', show_settings=False) -%}
-    <details class="render-info" {% if show_settings %}open="open"{% endif %}>
+                  favourites_weight=1, reblogs_weight=1, replies_weight=1, inverse_follower_boost=0,
+                  threshold='normal') -%}
+    <details class="settings" open="open">
         <summary>Settings</summary>
             <form id="settings-{{ settings_id }}">
-            {{ select(settings_id, 'Timeline source', 'source',
+            <h2>Post source</h2>
+            {{ select(settings_id, 'Timeline', 'source',
                       [
                         {'label': 'Home', 'value': 'home'},
                         {'label': 'Local', 'value': 'local'},
                         {'label': 'Federated', 'value': 'federated'}
                       ],
                       timeline_name) }}
-            {{ text_field(settings_id, 'Hours', 'hours', hours) }}
-            {{ select(settings_id, 'Scorer', 'scorer',
-                      [
-                        {'label': 'Likes and boosts', 'value': 'Simple'},
-                        {'label': 'Weighted likes and boosts', 'value': 'SimpleWeighted'},
-                        {'label': 'Likes, boosts, replies', 'value': 'ExtendedSimple'},
-                        {'label': 'Weighted likes, boosts, replies', 'value': 'ExtendedSimpleWeighted'}
-                      ],
-                      scorer) }}
+            {{ text_field(settings_id, 'Hours', 'hours', hours,
+                          helpText='How far back in time to look for posts.') }}
+
+            <h2>Engagement factors</h2>
+            <div>
+            Select the importance of likes, boosts, and replies to the ranking of the post.
+            </div>
+            {{ range(settings_id, 'Favorites multiplier', 'favourites_weight',
+                     ['0', '1x', '2x'], 0, 2, 0.1, favourites_weight) }}
+            {{ range(settings_id, 'Boosts multiplier', 'reblogs_weight',
+                     ['0', '1x', '2x'], 0, 2, 0.1, reblogs_weight) }}
+            {{ range(settings_id, 'Replies multiplier', 'replies_weight',
+                     ['0', '1x', '2x'], 0, 2, 0.1, replies_weight) }}
+
+            {{ radio(settings_id, 'Boost small authors', 'inverse_follower_boost', [
+                        {'label': 'Yes', 'value': 1},
+                        {'label': 'No', 'value': 0},
+                      ], inverse_follower_boost,
+                      helpText='If yes, authors with many followers will need a higher engagement score.') }}
             {{ select(settings_id, 'Threshold', 'threshold',
                       [
-                        {'label': 'Lax', 'value': 'lax'},
-                        {'label': 'Normal', 'value': 'normal'},
-                        {'label': 'Strict', 'value': 'strict'}
+                        {'label': 'Top 10% of posts', 'value': 'lax'},
+                        {'label': 'Top 5% of posts', 'value': 'normal'},
+                        {'label': 'Top 2% of posts', 'value': 'strict'}
                       ],
                       threshold) }}
-            <input type="submit" value="Update feed">
+            <input type="submit" value="See feed">
             </form>
     </details>
 {%- endmacro %}

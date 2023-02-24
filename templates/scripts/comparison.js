@@ -18,15 +18,16 @@ Feed.prototype.fetch = function() {
     $.ajax({
         beforeSend: function (xhr) {
             $(_this.selector.loader).toggle();
+            $(_this.selector.results).html('');
             xhr.setRequestHeader('Content-Type', 'application/json');
         },
-        // TODO: Make the params read from the form fields.
         data: JSON.stringify(postData),
         method: 'POST',
         url: '/feed/generate'
     }).always(function () {
         $(_this.selector.loader).toggle();
     }).done(function (data) {
+        $(_this.selector.settings).parent('.settings').prop('open', null);
         $(_this.selector.results).html(data);
     }).fail(function (data) {
         window.console.log(data);
@@ -40,7 +41,6 @@ Feed.prototype.init = function() {
       _this.fetch();
     });
 };
-
 
 $(document).ready(function() {
     // Auto-fetch the first two feeds (we have default settings).
