@@ -133,12 +133,13 @@ class ExtendedSimpleWeightedScorer(InverseFollowerWeight, ExtendedSimpleScorer):
 
 class AllFactorsWeightedScorer(Scorer):
 
-    def __init__(self, favourites_weight=0, reblogs_weight=0, replies_weight=0, inverse_follower_boost=False):
+    def __init__(self, favourites_weight: float=0, reblogs_weight: float=0, replies_weight: float=0,
+                 inverse_follower_boost: bool=False):
         """Initialize the all factors weighted score with the provided weights.
 
-        :param favourites_weight: [0.0-2.0] Importance of favorites in the score.
-        :param reblogs_weight: [0.0-2.0] Importance of reblogs in the score.
-        :param replies_weight: [0.0-2.0] Importance of replies in the score.
+        :param favourites_weight: Multiplier of favorites in the score.
+        :param reblogs_weight: Multiplier of reblogs in the score.
+        :param replies_weight: Multiplier of replies in the score.
         :param inverse_follower_boost: Whether to boost posts from people with fewer followers.
         """
         self._favourites_weight = favourites_weight
